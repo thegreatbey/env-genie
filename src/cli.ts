@@ -226,7 +226,7 @@ function buildSarif(args: {
     locations: [
       {
         physicalLocation: {
-          artifactLocation: { uri: filePath.replace(/\\/g, "/") },
+          artifactLocation: { uri: path.relative(process.cwd(), filePath).replace(/\\/g, "/") },
           region: { startLine: Math.max(1, f.line || 1) }
         }
       }

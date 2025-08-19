@@ -76,13 +76,15 @@ jobs:
           "
 
       - name: Lint .env and emit SARIF
-        run: |
-          npx env-genie --example .env.example --sarif env-genie.sarif || true
+        run: npx dist/cli.js --example .env.example --sarif env-genie.sarif || true
+
+      - name: Normalize SARIF paths
+        run: npx @microsoft/sarif-multitool rewrite --force --normalizeForGitHub env-genie.sarif normalized.sarif
 
       - name: Upload SARIF to Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: env-genie.sarif
+          sarif_file: normalized.sarif
 
       - name: Upload dry-run tarball listing (artifact)
         if: ${{ always() }}
