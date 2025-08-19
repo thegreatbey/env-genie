@@ -1,6 +1,6 @@
 {
   "name": "env-genie",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Fast .env linter for humans and CI",
   "bin": {
     "env-genie": "dist/cli.js"
