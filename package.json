@@ -23,6 +23,7 @@
     "picocolors": "^1.0.0"
   },
   "devDependencies": {
+    "@types/node": "^24.3.0",
     "typescript": "^5.5.4"
   },
   "engines": {
