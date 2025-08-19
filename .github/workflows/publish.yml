@@ -9,7 +9,7 @@ on:
 
 #workflow control
 concurrency:
-  group: publish-${{ github.ref }}
+  group: "publish-${{ github.ref }}"
   cancel-in-progress: false
 
 jobs:
