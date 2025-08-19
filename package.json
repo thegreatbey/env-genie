@@ -5,6 +5,14 @@
   "bin": {
     "env-genie": "dist/cli.js"
   },
+ "repository": {
+    "type": "git",
+    "url": "https://github.com/thegreatbey/env-genie"
+ },
+ "homepage": "https://github.com/thegreatbey/env-genie#readme",
+ "bugs": {
+    "url": "https://github.com/thegreatbey/env-genie/issues"
+  },
   "type": "module",
   "files": [
     "dist",
