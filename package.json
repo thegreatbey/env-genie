@@ -1,0 +1,40 @@
+{
+  "name": "env-genie",
+  "version": "0.0.0",
+  "description": "Fast .env linter for humans and CI",
+  "bin": {
+    "env-genie": "dist/cli.js"
+  },
+  "type": "module",
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "postbuild": "node -e \"const fs=require('fs');const p='dist/cli.js';fs.writeFileSync(p,'#!/usr/bin/env node\\n'+fs.readFileSync(p,'utf8'))\"",
+    "dev": "tsc -w",
+    "lint": "echo \"(add eslint later)\"",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "picocolors": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "dotenv",
+    "env",
+    "lint",
+    "ci",
+    "sarif"
+  ],
+  "license": "MIT",
+  "author": [
+    "TheGreatBey",
+    "Cavani21"
+  ],
+  "main": "index.js"
+}

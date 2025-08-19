@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+# build outputs
+dist/
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+# env
+.env
+.env.*
+# mac/windows cruft
+.DS_Store
+Thumbs.db
+# editor
+.vscode/
+# Archives
+*.zip
+*.7z
+*.tar
+*.tar.gz

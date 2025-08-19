@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "env-genie",
+          "version": "v0.0.0",
+          "rules": [
+            {
+              "id": "crlf-detected",
+              "shortDescription": {
+                "text": "env-genie rule: crlf-detected"
+              },
+              "fullDescription": {
+                "text": "Finding of type 'crlf-detected' reported by env-genie."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            },
+            {
+              "id": "trailing-space",
+              "shortDescription": {
+                "text": "env-genie rule: trailing-space"
+              },
+              "fullDescription": {
+                "text": "Finding of type 'trailing-space' reported by env-genie."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            },
+            {
+              "id": "invalid-key",
+              "shortDescription": {
+                "text": "env-genie rule: invalid-key"
+              },
+              "fullDescription": {
+                "text": "Finding of type 'invalid-key' reported by env-genie."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "crlf-detected",
+          "level": "warning",
+          "message": {
+            "text": "CRLF line endings detected; LF is recommended for cross-env consistency"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "C:/Users/rcabe/Coding/npm-exp/env-genie/.env"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "trailing-space",
+          "level": "warning",
+          "message": {
+            "text": "Trailing whitespace"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "C:/Users/rcabe/Coding/npm-exp/env-genie/.env"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "invalid-key",
+          "level": "warning",
+          "message": {
+            "text": "Invalid key 'BAD\\ KEY'. Use A–Z, 0–9, and underscores only."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "C:/Users/rcabe/Coding/npm-exp/env-genie/.env"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "key": "BAD\\ KEY"
+          }
+        }
+      ]
+    }
+  ]
+}

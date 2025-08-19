@@ -1,0 +1,128 @@
+name: Publish
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+#workflow control
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # required for npm provenance (OIDC)
+      security-events: write #for upload-sarif
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Verify package metadata exists
+        run: |
+          test -f package.json || (echo "package.json missing" && exit 1)
+          node -e "const p=require('./package.json'); if(!p.name||!p.version){throw new Error('name or version missing in package.json')}"
+
+      - name: Install dependencies (CI clean)
+        run: npm ci
+
+      - name: Lint (optional)
+        run: npm run lint --if-present
+
+      - name: Type-check (optional)
+        run: npm run typecheck --if-present
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run tests
+        run: npm test --if-present
+
+      - name: Sanity checks (bin and build outputs)
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          BIN=$(node -p "Object.values(require('./package.json').bin || {})[0] || ''")
+          if [ -z "$BIN" ]; then
+            echo "No 'bin' entry found in package.json"; exit 1
+          fi
+          if [ ! -f "$BIN" ]; then
+            echo "Bin target '$BIN' not found. Did you build to 'dist/'?"; exit 1
+          fi
+          chmod +x "$BIN" || true
+          echo "✔ Bin points to $BIN and exists."
+
+      - name: npm pack (dry run) and list files
+        run: |
+          npm pack --dry-run
+          echo "---- files in pack ----"
+          npm pack --json --dry-run | node -e "
+            const fs=require('fs');
+            const arr=JSON.parse(fs.readFileSync(0,'utf8'));
+            const files=arr[0]?.files||[];
+            for(const f of files){ console.log(f.path) }
+          "
+
+      - name: Lint .env and emit SARIF
+        run: |
+          npx env-genie --example .env.example --sarif env-genie.sarif || true
+
+      - name: Upload SARIF to Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: env-genie.sarif
+
+      - name: Upload dry-run tarball listing (artifact)
+        if: ${{ always() }}
+        run: |
+          npm pack --dry-run --json > pack.json
+        shell: bash
+      - name: Save pack.json
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-pack-dry-run
+          path: pack.json
+
+      - name: Ensure tag matches package.json version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          VER=$(node -p "require('./package.json').version")
+          echo "Tag: $TAG  Package.json: $VER"
+          if [ "$TAG" != "$VER" ]; then
+            echo "Git tag v$TAG does not match package.json version $VER"
+            exit 1
+          fi
+
+      - name: Skip if version already published
+        id: check
+        run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          PUB=$(npm view "$PKG" version || echo "0.0.0")
+          echo "local=$VER published=$PUB"
+          if [ "$VER" = "$PUB" ]; then echo "skip=true" >> $GITHUB_OUTPUT; fi
+
+      - name: Publish package (tagged releases only)
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && steps.check.outputs.skip != 'true' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # Show what will be published
+          npm pack --dry-run
+
+          # Publish with provenance (requires id-token: write)
+          npm publish --access public --provenance
