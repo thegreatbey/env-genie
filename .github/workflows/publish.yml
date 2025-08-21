@@ -124,4 +124,4 @@ jobs:
           # Show what will be published
           npm pack --dry-run
           # Publish with provenance (requires id-token: write)
-          npm publish --access public --provenance
+          npm publish --provenance --access public 

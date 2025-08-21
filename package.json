@@ -1,6 +1,6 @@
 {
   "name": "env-genie",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "Fast .env linter for humans and CI. Validate and lint .env files; emit SARIF for CI.",
   "bin": {
     "env-genie": "dist/cli.js"
