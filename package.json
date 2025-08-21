@@ -1,16 +1,16 @@
 {
   "name": "env-genie",
   "version": "0.0.1",
-  "description": "Fast .env linter for humans and CI",
+  "description": "Fast .env linter for humans and CI. Validate and lint .env files; emit SARIF for CI.",
   "bin": {
     "env-genie": "dist/cli.js"
   },
- "repository": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/thegreatbey/env-genie"
- },
- "homepage": "https://github.com/thegreatbey/env-genie#readme",
- "bugs": {
+  },
+  "homepage": "https://github.com/thegreatbey/env-genie#readme",
+  "bugs": {
     "url": "https://github.com/thegreatbey/env-genie/issues"
   },
   "type": "module",
@@ -30,6 +30,10 @@
     "commander": "^12.1.0",
     "picocolors": "^1.0.0"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "devDependencies": {
     "@types/node": "^24.3.0",
     "typescript": "^5.5.4"
@@ -45,9 +49,9 @@
     "sarif"
   ],
   "license": "MIT",
-  "author": [
-    "TheGreatBey",
+  "author": "TheGreatBey",
+  "contributors": [
     "Cavani21"
   ],
-  "main": "index.js"
+  "sideEffects": false
 }
