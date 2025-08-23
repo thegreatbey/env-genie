@@ -1,15 +1,26 @@
 name: env-lint
-on: [push, pull_request]
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
 
 jobs:
-  lint-env:
+  lint_env:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npx env-genie --sarif env-genie.sarif --exit-zero
-      - uses: github/codeql-action/upload-sarif@v3
+          cache: "npm"
+      - name: Install deps
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Lint .env and produce SARIF
+        run: node dist/cli.js --sarif env-genie.sarif --exit-zero
+      - name: Upload SARIF to Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: env-genie.sarif
